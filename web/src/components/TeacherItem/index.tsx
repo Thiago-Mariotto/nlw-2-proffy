@@ -2,33 +2,60 @@ import React from 'react';
 
 import whatsappIcon from '../../assets/images/icons/whatsapp.svg';
 import './style.css';
+import api from '../../services/api';
 
-function TeacherItem() {
+export interface Teacher{
+    id: number,
+    avatar: string,
+    bio: string
+    cost: number,
+    name: string,
+    subject: string,
+    whatsapp: string 
+}
+interface TeacherItemProps{
+    teacher: Teacher;
+}
+
+const TeacherItem: React.FC<TeacherItemProps> = ({teacher}) => {
+    
+    function createNewConnection(){
+        api.post('connections', {
+            user_id: teacher.id,
+        });
+    }
+    
     return (
         <article className="teacher-item">
             <header>
-                <img src="https://avatars0.githubusercontent.com/u/33105610?s=460&u=32c15e809836bde2121fe525c516f1919306f966&v=4" alt="Thiago Mariotto" />
+                <img src={teacher.avatar} alt={teacher.name} />
                 <div>
-                    <strong>Thiago Mariotto</strong>
-                    <span>Programação</span>
+                    <strong> {teacher.name} </strong>
+                    <span> {teacher.subject} </span>
                 </div>
-
             </header>
 
-            <p>O melhor programador do mundo, talvez do Brasil
-                        <br /><br />
-                        Atualmente da aula pra todo mundo!
-                    </p>
+            <p> {teacher.bio} </p>
 
             <footer>
                 <p>
                     Preço/hora
-                            <strong>R$ 70,00</strong>
+                    <strong>R$ {teacher.cost}</strong>
                 </p>
-                <button type="button">
+
+                <a 
+                    target='_blank'
+                    onClick={createNewConnection}
+                    href={
+                        `https://wa.me/55${teacher.whatsapp}
+                        ?text=Olá ${teacher.name} 
+                        fique interessado em suas aulas de ${teacher.subject} 
+                        poderia me passar mais informações?`
+                    }>
+                    
                     <img src={whatsappIcon} alt="whatsapp" />
-                            Entrar em contato
-                        </button>
+                    Entrar em contato
+                </a>
             </footer>
         </article>
     )
